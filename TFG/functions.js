@@ -2,72 +2,35 @@ const API_KEY = "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";
 
 let id = 0;
 
-function crearSol(position) {
-    const escena = document.querySelector('a-scene');
-    const nuevoSol = document.createElement('a-sphere');
-    nuevoSol.setAttribute('position', position);
-    nuevoSol.setAttribute('radius', '1.5');
-    nuevoSol.setAttribute('color', '#FFFFFF');
-    nuevoSol.setAttribute('material', 'emissive:rgb(255, 255, 255); emissiveIntensity: 1; side: double;');
-    nuevoSol.setAttribute('light', 'type: point; intensity: 5; distance: 50; decay: 2; color:rgb(255, 255, 255)');
-    nuevoSol.setAttribute('animation', "property: rotation; to: 0 360 0; loop: true; dur: 3000");
-    nuevoSol.setAttribute('collect-id-on-click', '');
-    nuevoSol.setAttribute('id', `sol-${id}`);
-    nuevoSol.setAttribute('onclick', `startEdit('${nuevoSol.id}')`);
-    escena.appendChild(nuevoSol);
-    id++;
-    console.log("Sol creado en la escena.");
+export function actualizarAtributos() {
+    console.log("Actualizando atributos...");
+    const lanzador = document.getElementById('lanzador');
+    lanzador.flushToDOM(true);
+    console.log("Atributos actualizados.");
 }
 
-
-function crearEsfera(position) {
-    console.log("POSICIÓN esfera:", position);
-    const escena = document.querySelector('a-scene');
-    const nuevaEsfera = document.createElement('a-sphere');
-    nuevaEsfera.setAttribute('position', position);
-    nuevaEsfera.setAttribute('material', 'side: double; src: url(https://static.vecteezy.com/system/resources/thumbnails/028/250/102/small/watermelon-peel-seamless-pattern-food-texture-background-wallpaper-of-summer-vector.jpg);');
-    nuevaEsfera.setAttribute('color', `#${Math.floor(Math.random() * 16777215).toString(16)}`);
-    nuevaEsfera.setAttribute('scale', '2 2 2');
-    nuevaEsfera.setAttribute('collect-id-on-click', '');
-    nuevaEsfera.setAttribute('id', `primitive-${id}`);
-    nuevaEsfera.setAttribute('onclick', `startEdit('${nuevaEsfera.id}')`);
-    nuevaEsfera.setAttribute('dynamic-body', '');
-    escena.appendChild(nuevaEsfera);
-    id++;
-    console.log("esfera creado en la escena.");
-};
-
-function crear(nombreEntidad, position) {
-    const primitivePosition = `${position.x} ${position.y} ${position.z - 10}`;
-    const modelPosition = `${position.x} 0 ${position.z - 10}`;
-    const entidadRecibida = nombreEntidad.trim('');
-    if (entidadRecibida.includes('esfera')) {
-        crearEsfera(primitivePosition);
-    } else if (entidadRecibida.includes('cubo')) {
-        crearCubo(primitivePosition);
-    } else if (entidadRecibida.includes('suelo')) {
-        crearSuelo(primitivePosition);
-    } else if (entidadRecibida.includes('piramide')) {
-        crearPiramide(primitivePosition);
-    } else if (entidadRecibida.includes('sol')) {
-        crearSol(primitivePosition);
-    } else {
-        const escena = document.querySelector('a-scene');
-        const nuevaEntidad = document.createElement('a-entity');
-        nuevaEntidad.setAttribute('position', modelPosition);
-        nuevaEntidad.setAttribute('color', '#FFFFFF');
-        nuevaEntidad.setAttribute('gltf-model', `#${entidadRecibida}`);
-        nuevaEntidad.setAttribute('scale', '2 2 2');
-        nuevaEntidad.setAttribute('rotation', '0 0 0');
-        nuevaEntidad.setAttribute('collect-id-on-click', '');
-        nuevaEntidad.setAttribute('id', `id-${id}`);
-        nuevaEntidad.setAttribute('animation-mixer', 'clip: *; loop: repeat; crossFadeDuration: 0.5');
-        nuevaEntidad.setAttribute('onclick', `startEdit('${nuevaEntidad.id}')`);
-        escena.appendChild(nuevaEntidad);
-        console.log("Entidad creada en la escena.");
-        id++;
+async function cargarEscenaGuardada() {
+    await AFRAME.scenes[0].hasLoaded;
+    let scene = document.getElementById("lanzador").innerHTML;
+    console.log("Cargando escena guardada...", scene);
+    scene = "";
+    const sceneFile = "mi-escena.html";
+    try {
+        const response = await fetch(sceneFile);
+        if (response.ok) {
+            const text = await response.text();
+            console.log("Escena guardada mi-escena.html:", text);
+            document.getElementById("lanzador").innerHTML = text;
+            console.log("Escena cargada correctamente.");
+        } else {
+            console.log("No se encontró una escena guardada.");
+        }
+    } catch (error) {
+        console.error("Error al cargar la escena:", error);
     }
 }
+
+// document.querySelector("a-scene").addEventListener('loaded', cargarEscenaGuardada); // Cargar la escena guardada al cargar la página
 
 export function borrar(id) {
     const objeto = document.getElementById(id);
@@ -105,25 +68,6 @@ function crearSuelo(position) {
     console.log("suelo creado en la escena.");
 }
 
-function crearPiramide(position) {
-    const escena = document.querySelector('a-scene');
-    const nuevaPiramide = document.createElement('a-cone');
-    nuevaPiramide.setAttribute('position', position);
-    nuevaPiramide.setAttribute('color', ``);
-    nuevaPiramide.setAttribute('segments-radial', '4');
-    nuevaPiramide.setAttribute('radius-bottom', '2');
-    // nuevaPiramide.setAttribute('height', '2.5');
-    nuevaPiramide.setAttribute('scale', '2 2 2');
-    nuevaPiramide.setAttribute('rotation', '0 0 0;');
-    nuevaPiramide.setAttribute('collect-id-on-click', '');
-    nuevaPiramide.setAttribute('id', `piramide-${id}`);
-    nuevaPiramide.setAttribute('material', `side: double; src: #textura-piramide`);
-    nuevaPiramide.setAttribute('onclick', `startEdit('${nuevaPiramide.id}')`);
-    escena.appendChild(nuevaPiramide);
-    console.log("piramide creada en la escena.");
-    id++;
-}
-
 export function editarObjeto(objetoId, newObjectJson) {
     const objeto = document.getElementById(objetoId);
     let modelo = newObjectJson.model.trim();
@@ -142,9 +86,9 @@ export function editarObjeto(objetoId, newObjectJson) {
     console.log("Objeto editado en la escena.");
 }
 
-function borrarTodo() {
-    const creador = document.getElementById('lanzador');
-    creador.innerHTML = '';
+export function borrarTodo() {
+    const lanzador = document.getElementById('lanzador');
+    lanzador.innerHTML = '';
     console.log("Elementos eliminados de la escena.");
 }
 
@@ -299,7 +243,6 @@ export async function startEdit(id) {
         if (comandoTraducido.includes('borrar')) {
             borrar(id);
         } else {
-            // console.log('Comando traducido json:', JSON.parse(comandoTraducido));
             editarObjeto(id, JSON.parse(comandoTraducido));
         }
     });
