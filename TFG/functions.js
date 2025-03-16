@@ -30,7 +30,7 @@ async function cargarEscenaGuardada() {
     }
 }
 
-// document.querySelector("a-scene").addEventListener('loaded', cargarEscenaGuardada); // Cargar la escena guardada al cargar la página
+document.querySelector("a-scene").addEventListener('loaded', cargarEscenaGuardada); // Cargar la escena guardada al cargar la página
 
 export function borrar(id) {
     const objeto = document.getElementById(id);
@@ -75,9 +75,19 @@ export function editarObjeto(objetoId, newObjectJson) {
     console.log("Modelo:", `#${modelo}`);
     let scale = newObjectJson.scale;
     if (modelo != "" && modelo != undefined) {
-        objeto.setAttribute('gltf-model', `./Modelos/${modelo}.glb`);
+        try {
+            fetch(`./Modelos/${modelo}.glb`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Modelo no encontrado.");
+                    }
+                    objeto.setAttribute('gltf-model', `./Modelos/${modelo}.glb`);
+                });
+        } catch (error) {
+            console.error("Error al cargar el modelo:", error);
+        }
     }
-    
+
     objeto.setAttribute('scale', scale);
     objeto.setAttribute('position', position);
 
