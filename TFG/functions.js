@@ -1,6 +1,6 @@
 const API_KEY = "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";
 
-let id = 0;
+export let creation_id = 0;
 
 export function actualizarAtributos() {
     console.log("Actualizando atributos...");
@@ -9,8 +9,23 @@ export function actualizarAtributos() {
     console.log("Atributos actualizados.");
 }
 
+function updateId(htmlText) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, 'text/html');
+    const entities = doc.querySelectorAll('a-entity[id]');
+    if (entities.length > 0) {
+        const lastEntity = entities[entities.length - 1];
+        console.log("Último elemento id:", lastEntity.getAttribute('id'));
+        let id_int = parseInt(lastEntity.getAttribute('id'));
+        console.log("Último id:", id_int);
+        let updated_id = id_int + 1;
+        return updated_id;
+    } else {
+        return null;
+    }
+}
+
 async function cargarEscenaGuardada() {
-    await AFRAME.scenes[0].hasLoaded;
     let scene = document.getElementById("lanzador").innerHTML;
     console.log("Cargando escena guardada...", scene);
     scene = "";
@@ -20,6 +35,7 @@ async function cargarEscenaGuardada() {
         if (response.ok) {
             const text = await response.text();
             console.log("Escena guardada mi-escena.html:", text);
+            creation_id = updateId(text);
             document.getElementById("lanzador").innerHTML = text;
             console.log("Escena cargada correctamente.");
         } else {

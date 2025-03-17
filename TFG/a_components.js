@@ -1,6 +1,4 @@
-import { startEdit, actualizarAtributos, borrarTodo } from "./functions.js";
-
-let creation_id = 0;
+import { startEdit, actualizarAtributos, borrarTodo, creation_id } from "./functions.js";
 
 AFRAME.registerComponent('creador-ui', {
     init: function () {
