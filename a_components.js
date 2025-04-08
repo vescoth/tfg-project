@@ -1,4 +1,4 @@
-import { startEdit, actualizarAtributos, borrarTodo, creation_id } from "./functions.js";
+import { startEdit, actualizarAtributos, borrarTodo, state } from "./functions.js";
 
 AFRAME.registerComponent('creador-ui', {
     init: function () {
@@ -77,17 +77,19 @@ AFRAME.registerComponent("creador-lanzador", {
         const scale = '1 1 1';
         const position = this.el.getAttribute('position');
         console.log('Posición del lanzador:', position);
-        console.log('Elemento lanzador:', el);
-        this.el.addEventListener("click", () => {
+        this.el.addEventListener("click", (event) => {
+            event.stopPropagation(); // Evitar que el evento se propague a otros elementos
+            console.log('Evento click en lanzador activado');
             const creador = document.createElement("a-entity");
-            creador.setAttribute('id', `${creation_id}`);
+            creador.setAttribute('id', `${state.creation_id}`);
             creador.setAttribute('gltf-model', modelo);
             creador.setAttribute('position', '0 2 -5');
             creador.setAttribute('scale', scale);
+            creador.setAttribute('rotation', '0 0 0');
             creador.setAttribute('animation-mixer', '');
             creador.setAttribute('creador', '');
-            el.appendChild(creador);
-            creation_id++;
+            el.appendChild(creador); // Agregar el creador a la escena en lugar del lanzador
+            state.creation_id += 1;
         });
     },
 });
@@ -123,9 +125,58 @@ AFRAME.registerComponent("creador", {
         console.log('Elemento objeto:', this.el);
         this.el.addEventListener("click", (event) => {
             event.stopPropagation();
+        });
+        this.el.addEventListener("mousedown", (event) => {
+            console.log('Evento onmousedown activado');
+            event.stopPropagation();
             const elementId = this.el.getAttribute('id');
             console.log('ID del objeto:', elementId);
             startEdit(elementId);
         });
     },
 });
+
+// AFRAME.registerComponent('mobile-touch-move', {
+//     init: function () {
+//     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+//     if (!isMobile) {
+//       console.log("Emulando entorno móvil en el navegador del ordenador.");
+//       navigator.__defineGetter__('userAgent', function () {
+//         return "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1";
+//       });
+//     }
+
+//       const el = this.el;
+//       const moveSpeed = 0.05;
+//       let touchInterval = null;
+
+//       function moveCamera(direction = 1) {
+//         const dir = new THREE.Vector3();
+//         el.object3D.getWorldDirection(dir);
+//         el.object3D.position.addScaledVector(dir, moveSpeed * direction);
+//       }
+
+//       function startMoving(touches) {
+//         let direction = 0;
+//         if (touches === 1) direction = -1;
+//         else if (touches === 2) direction = 1;
+//         if (direction !== 0) {
+//           touchInterval = setInterval(() => moveCamera(direction), 1);
+//         }
+//       }
+
+//       function stopMoving() {
+//         clearInterval(touchInterval);
+//         touchInterval = null;
+//       }
+
+//       window.addEventListener('touchstart', (e) => {
+//         if (!touchInterval) {
+//           startMoving(e.touches.length);
+//         }
+//       });
+
+//       window.addEventListener('touchend', stopMoving);
+//       window.addEventListener('touchcancel', stopMoving);
+//     }
+//   });
