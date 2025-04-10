@@ -10,10 +10,34 @@
     <script type="module" src="./functions.js"></script>
     <script type="module" src="./a_components.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <style>
+        .grabbed {
+            animation: pulse 0.5s ease infinite alternate;
+            outline: 2px solid yellow;
+        }
+
+        @keyframes pulse {
+            from {
+                opacity: 0.9;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <a-scene>
+    <a-scene physics>
+        <!-- Objeto arrastrable -->
+        <a-entity id="movable-box" geometry="primitive: box; width: 0.5; height: 0.5; depth: 0.5"
+            material="color: #EF2D5E; metalness: 0.3; roughness: 0.4" position="0 1.5 -2"
+            dynamic-body="mass: 2; linearDamping: 0.5; angularDamping: 0.7" draggable class="clickable"></a-entity>
+        <a-entity id="90" gltf-model="./Modelos/fluido.glb" position="5 0 -5" scale="1 1 1" animation-mixer creador
+            dynamic-body="mass: 2; linearDamping: 0.5; angularDamping: 0.7" draggable class="clickable"></a-entity>
         <a-assets>
             <img id="textura-sky" src="./texturas/enviroment.jpg" />
             <img id="textura-sol" src="./texturas/8k_sun.jpg" />
@@ -35,23 +59,32 @@
             <a-asset-item id="basura" src="./Modelos/basura.glb"></a-asset-item>
         </a-assets>
 
-        <a-entity creador-ui></a-entity>
+        <a-entity creador-ui>
+            <a-sphere dynamic-body="mass: 2; linearDamping: 0.5; angularDamping: 0.7" draggable class="clickable"
+                position="0 1.25 10" radius="1.25" color="#EF2D5E"></a-sphere>
+        </a-entity>
         <a-sky src="#textura-sky"></a-sky>
-
+        <a-sphere dynamic-body="mass: 2; linearDamping: 0.5; angularDamping: 0.7" draggable class="clickable"
+            position="0 1.25 5" radius="1.25" color="#EF2D5E"></a-sphere> PORQUE DYNAMIC BODY NO FUNCIONA CUANDO SE
+        CARGA DESDE ARCHIVOS ESTATICOS?
         <!-- Luz -->
         <a-light type="directional" intensity="1" position="0 7 10"></a-light>
         <a-light type="ambient" intensity="1"></a-light>
 
         <!-- Suelo -->
-        <a-entity geometry="primitive: circle; radius: 100;" material="color: white ; opacity: 0.7; metalness: 0.5; emissive:rgb(255, 255, 255)" position="0 0 0" rotation="-90 0 0" static-body>
+        <a-entity geometry="primitive: circle; radius: 100;"
+            material="color: white ; opacity: 0.7; metalness: 0.5; emissive:rgb(255, 255, 255)" position="0 0 0"
+            rotation="-90 0 0" static-body>
         </a-entity>
 
         <!-- Cámara -->
-        <a-entity id="cameraRig" position="0 1.6 20" collision-body="shape: sphere; radius: 0.5">
-            <a-camera>
-                <a-cursor color="yellow"></a-cursor>
-            </a-camera>
+        <a-entity id="camera" camera look-controls wasd-controls position="0 1.6 0">
+            <a-entity cursor="rayOrigin: mouse" raycaster="objects: [draggable]" id="mouse-cursor">
+            </a-entity>
         </a-entity>
+
+        <a-entity id="box" geometry="primitive: box" material="color: blue" position="0 1.5 -2" draggable
+            class="clickable"></a-entity>
     </a-scene>
 </body>
 
