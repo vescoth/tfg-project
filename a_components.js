@@ -10,25 +10,25 @@ AFRAME.registerComponent('creador-ui', {
         // Crear botón lanzador
         creadorLanzador.setAttribute('id', 'lanzador');
         creadorLanzador.setAttribute('position', '0 0 0');
-        creadorLanzador.setAttribute('scale', '5 5 5');
+        creadorLanzador.setAttribute('scale', '1 1 1');
         creadorLanzador.setAttribute('rotation', '-1 0 -1');
         creadorLanzador.setAttribute('gltf-model', "#button");
         creadorLanzador.setAttribute('creador-lanzador', '');
         creadorLanzador.setAttribute('class', 'clickable');
-        
+
 
         // Crear señal de lanzador
         const señalLanzador = document.createElement('a-entity');
         señalLanzador.setAttribute('id', 'señal-lanzador');
-        señalLanzador.setAttribute('position', '0 5 0');
-        señalLanzador.setAttribute('scale', '1 1 1');
+        señalLanzador.setAttribute('position', '0 1 0');
+        señalLanzador.setAttribute('scale', '0.1 0.1 0.1');
         señalLanzador.setAttribute('gltf-model', '#fluido');
         señalLanzador.setAttribute('animation-mixer', '');
 
         // Crear botón saver
         creadorSaver.setAttribute('id', 'saver');
-        creadorSaver.setAttribute('position', '-10 0 0');
-        creadorSaver.setAttribute('scale', '5 5 5');
+        creadorSaver.setAttribute('position', '-1 0 0');
+        creadorSaver.setAttribute('scale', '1 1 1');
         creadorSaver.setAttribute('rotation', '-1 0 -1');
         creadorSaver.setAttribute('gltf-model', "#button");
         creadorSaver.setAttribute('saver', '');
@@ -36,16 +36,16 @@ AFRAME.registerComponent('creador-ui', {
         // Crear señal de saver
         const señalSaver = document.createElement('a-entity');
         señalSaver.setAttribute('id', 'señal-saver');
-        señalSaver.setAttribute('position', '-10 5 0');
-        señalSaver.setAttribute('scale', '20 20 20');
+        señalSaver.setAttribute('position', '-1 1 0');
+        señalSaver.setAttribute('scale', '2 2 2');
         señalSaver.setAttribute('gltf-model', '#cd');
         señalSaver.setAttribute('animation-mixer', '');
 
         // Crear botón de borrar
         const creadorEraser = document.createElement('a-entity');
         creadorEraser.setAttribute('id', 'borrar');
-        creadorEraser.setAttribute('position', '10 0 0');
-        creadorEraser.setAttribute('scale', '5 5 5');
+        creadorEraser.setAttribute('position', '1 0 0');
+        creadorEraser.setAttribute('scale', '1 1 1');
         creadorEraser.setAttribute('rotation', '-1 0 -1');
         creadorEraser.setAttribute('gltf-model', "#button");
         creadorEraser.setAttribute('eraser', '');
@@ -54,10 +54,10 @@ AFRAME.registerComponent('creador-ui', {
         // Crear señal de borrar
         const señalBorrar = document.createElement('a-entity');
         señalBorrar.setAttribute('id', 'señal-borrar');
-        señalBorrar.setAttribute('position', '10 4 0');
+        señalBorrar.setAttribute('position', '1 1 0');
         señalBorrar.setAttribute('gltf-model', "#basura");
         señalBorrar.setAttribute('rotation', '0 90 0');
-        señalBorrar.setAttribute('scale', '0.005 0.005 0.005');
+        señalBorrar.setAttribute('scale', '0.0005 0.0005 0.0005');
         señalBorrar.setAttribute('animation-mixer', '');
 
 
@@ -90,18 +90,10 @@ AFRAME.registerComponent("creador-lanzador", {
             creador.setAttribute('scale', scale);
             creador.setAttribute('rotation', '0 0 0');
             creador.setAttribute('animation-mixer', '');
-            creador.setAttribute('creador', '');            
-            creador.addEventListener('loaded', () => {
-                creador.setAttribute('dynamic-body', {
-                    mass: 2,
-                    linearDamping: 0.5,
-                    angularDamping: 0.7,
-                });
-            });
+            creador.setAttribute('creador', '');
             creador.setAttribute('draggable', '');
-            creador.setAttribute('class', 'clickable'); 
-            el.appendChild(creador); 
-            actualizarAtributos();
+            creador.setAttribute('class', 'clickable');
+            el.appendChild(creador);
             state.creation_id += 1;
         });
     },
@@ -171,20 +163,22 @@ AFRAME.registerComponent('camera-height-control', {
         if (this.down) pos.y -= this.data.speed;
     }
 });
+
 AFRAME.registerComponent('draggable', {
     init: function () {
         this.grabbed = false;
         this.initialDepth = 0;
-        this.initialPosition = new THREE.Vector3();
         this.offset = new THREE.Vector3();
+        this.cursor = document.querySelector('#gaze-cursor'); // Cursor central
+        this.camera = document.querySelector('[camera]');
 
+        // Iniciar arrastre
         this.el.addEventListener('mousedown', this.startDrag.bind(this));
-        document.addEventListener('mousemove', this.dragMove.bind(this));
-        document.addEventListener('mouseup', this.stopDrag.bind(this));
-
         this.el.addEventListener('touchstart', this.startDrag.bind(this));
-        document.addEventListener('touchmove', this.dragMove.bind(this));
-        document.addEventListener('touchend', this.stopDrag.bind(this));
+
+        // Terminar arrastre
+        this.el.sceneEl.addEventListener('mouseup', this.stopDrag.bind(this));
+        this.el.sceneEl.addEventListener('touchend', this.stopDrag.bind(this));
 
         this.el.addEventListener('body-loaded', () => {
             this.body = this.el.body;
@@ -194,18 +188,20 @@ AFRAME.registerComponent('draggable', {
     startDrag: function (evt) {
         if (this.grabbed) return;
 
+        const intersects = this.cursor.components.raycaster.intersections;
+        if (!intersects || intersects.length === 0 || intersects[0].object.el !== this.el) return;
+
         this.grabbed = true;
         this.el.classList.add('grabbed');
 
-        this.initialPosition.copy(this.el.object3D.position);
-        const cameraPosition = this.el.sceneEl.camera.el.object3D.position;
-        this.initialDepth = this.initialPosition.distanceTo(cameraPosition);
+        const intersectionPoint = intersects[0].point;
+        const objectPosition = this.el.object3D.position;
 
-        if (evt.detail?.intersection) {
-            this.offset.copy(this.el.object3D.position).sub(evt.detail.intersection.point);
-        } else {
-            this.offset.set(0, 0, 0);
-        }
+        this.offset.copy(objectPosition).sub(intersectionPoint);
+
+        const cameraPos = new THREE.Vector3();
+        this.camera.object3D.getWorldPosition(cameraPos);
+        this.initialDepth = intersectionPoint.distanceTo(cameraPos);
 
         if (this.body) {
             this.body.sleep();
@@ -214,31 +210,24 @@ AFRAME.registerComponent('draggable', {
         }
     },
 
-    dragMove: function (evt) {
+    tick: function () {
         if (!this.grabbed) return;
 
-        const mouse = this.getMousePosition(evt);
-        const scene = this.el.sceneEl;
-        const camera = scene.camera;
+        const raycaster = this.cursor.components.raycaster.raycaster;
+        if (!raycaster) return;
 
-        const raycaster = new THREE.Raycaster();
-        raycaster.setFromCamera(mouse, camera);
-
-        const distance = this.initialDepth || 3;
-        const newPosition = raycaster.ray.origin.clone().add(
-            raycaster.ray.direction.clone().multiplyScalar(distance)
+        const targetPoint = raycaster.ray.origin.clone().add(
+            raycaster.ray.direction.clone().multiplyScalar(this.initialDepth)
         ).add(this.offset);
 
-        this.el.object3D.position.copy(newPosition);
+        this.el.object3D.position.copy(targetPoint);
+        this.el.object3D.updateMatrixWorld(true);
 
         if (this.body) {
-            this.body.position.copy(newPosition);
+            this.body.position.copy(targetPoint);
             this.body.velocity.set(0, 0, 0);
             this.body.angularVelocity.set(0, 0, 0);
-            this.body.updateMatrixWorld();
         }
-
-        this.el.object3D.updateMatrixWorld(true);
     },
 
     stopDrag: function () {
@@ -251,68 +240,6 @@ AFRAME.registerComponent('draggable', {
             this.body.wakeUp();
             this.body.collisionFilterGroup = 1;
             this.body.collisionFilterMask = 1;
-            this.body.updateMatrixWorld();
         }
-    },
-
-    getMousePosition: function (evt) {
-        const mouse = new THREE.Vector2();
-        const canvas = this.el.sceneEl.canvas;
-
-        if (evt.type.includes('touch')) {
-            const touch = evt.touches[0] || evt.changedTouches[0];
-            mouse.x = (touch.clientX / canvas.clientWidth) * 2 - 1;
-            mouse.y = -(touch.clientY / canvas.clientHeight) * 2 + 1;
-        } else {
-            mouse.x = (evt.clientX / canvas.clientWidth) * 2 - 1;
-            mouse.y = -(evt.clientY / canvas.clientHeight) * 2 + 1;
-        }
-
-        return mouse;
     }
 });
-
-// AFRAME.registerComponent('mobile-touch-move', {
-//     init: function () {
-//     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-//     if (!isMobile) {
-//       console.log("Emulando entorno móvil en el navegador del ordenador.");
-//       navigator.__defineGetter__('userAgent', function () {
-//         return "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1";
-//       });
-//     }
-
-//       const el = this.el;
-//       const moveSpeed = 0.05;
-//       let touchInterval = null;
-
-//       function moveCamera(direction = 1) {
-//         const dir = new THREE.Vector3();
-//         el.object3D.getWorldDirection(dir);
-//         el.object3D.position.addScaledVector(dir, moveSpeed * direction);
-//       }
-
-//       function startMoving(touches) {
-//         let direction = 0;
-//         if (touches === 1) direction = -1;
-//         else if (touches === 2) direction = 1;
-//         if (direction !== 0) {
-//           touchInterval = setInterval(() => moveCamera(direction), 1);
-//         }
-//       }
-
-//       function stopMoving() {
-//         clearInterval(touchInterval);
-//         touchInterval = null;
-//       }
-
-//       window.addEventListener('touchstart', (e) => {
-//         if (!touchInterval) {
-//           startMoving(e.touches.length);
-//         }
-//       });
-
-//       window.addEventListener('touchend', stopMoving);
-//       window.addEventListener('touchcancel', stopMoving);
-//     }
-//   });
