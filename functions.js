@@ -56,7 +56,7 @@ export function borrar(id) {
     console.log("Elemento eliminado de la escena.");
 }
 
-export function editarObjeto(objetoId, newObjectJson) {
+export async function editarObjeto(objetoId, newObjectJson) {
     const objeto = document.getElementById(objetoId);
     let modelo = newObjectJson.model.trim();
     let position = newObjectJson.position;
@@ -65,7 +65,7 @@ export function editarObjeto(objetoId, newObjectJson) {
     let scale = newObjectJson.scale;
     if (modelo != "" && modelo != undefined) {
         try {
-            fetch(`./Modelos/${modelo}.glb`)
+            await fetch(`./Modelos/${modelo}.glb`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Modelo no encontrado.");
@@ -107,8 +107,10 @@ export async function identifyEdition(prompt) {
                     {
                         "role": "system",
                         "content": "Eres un asistente que se encarga de generar un JSON válido o responder con 'borrar'. El JSON tendrá los elementos\
-                                    'model', 'scale' y 'position'.\
-                                    Tu misión es elegir los valores de estos elementos que más se adecúen a la solicitud del usuario."
+                                    'model', 'scale', 'position' y 'rotation'.\
+                                    Tu misión es elegir los valores de estos elementos que más se adecúen a la solicitud del usuario.\
+                                    NO APLIQUES NINGÚN FORMATO ADICIONAL A TU RESPUESTA, SOLO DEVUELVE EL JSON EN TEXTO PLANO O 'borrar'.\
+                                    Responde lo más rápido posible"
                     },
                     {
                         "role": "assistant",
@@ -134,8 +136,8 @@ export async function identifyEdition(prompt) {
                                     Recuerda que si el usuario solicita borrar la figura, NO se responderá con un JSON, SOLO contesta "borrar".\
                                     Ejemplos de entrada y salida:\
                                     1.\
-                                    Entrada: "Quiero tener un T-rex { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"\
-                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }}\
+                                    Entrada: "Quiero tener/generar/crear un xxx { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"\
+                                    Salida: { "model": "xxx", "scale": { "x": 1, "y": 1, "z": 1 }}\
                                     2.\
                                     Entrada: "Quiero borrar esto"\
                                     Salida: borrar\
@@ -148,7 +150,10 @@ export async function identifyEdition(prompt) {
                                     5.\
                                     Entrada: "Ponlo en el suelo { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }}"\
                                     Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 0, "z": 1 }}\
-                                    '
+                                    La lista de modelos disponibles que deberás identificar según el prompt del usuario es la siguiente:\
+                                    - "rex", "flor", "dron", "fenix", "dragon", "coche", "boton", "basura", "casa-arbol", "antorcha", "piedra", "madera", "hierba", "casa"\
+                                    "ventana", "casa-arbol", "cofre", "abeja", "lampara"'
+                                    
                     },
                     {
                         "role": "user",
@@ -242,20 +247,22 @@ export async function startEdit(id) {
         console.log("Grabación detenida.");
         const transcript = await recognizeSpeech(audio.audioBlob);
         console.log('Comando detectado:', transcript);
-        const promptToEdit = transcript.toLowerCase() + 
-            ` { "model": "${modelName}", \
-            "scale": { "x": ${scale.x}, "y": ${scale.y}, "z": ${scale.z} }, \
-            "position": { "x": ${position.x}, "y": ${position.y}, "z": ${position.z} },\
-            "rotation": { "x": ${rotation.x}, "y": ${rotation.y}, "z": ${rotation.z} } }`;
-        
-        console.log('Prompt:', promptToEdit);
-        identifyEdition(promptToEdit).then(comandoTraducido => {
-            if (comandoTraducido.includes('borrar')) {
-                borrar(id);
-            } else {
-                editarObjeto(id, JSON.parse(comandoTraducido));
-            }
-        });
+        if (transcript.toLowerCase().includes('por favor')) {
+            const promptToEdit = transcript.toLowerCase() + 
+                ` { "model": "${modelName}", \
+                "scale": { "x": ${scale.x}, "y": ${scale.y}, "z": ${scale.z} }, \
+                "position": { "x": ${position.x}, "y": ${position.y}, "z": ${position.z} },\
+                "rotation": { "x": ${rotation.x}, "y": ${rotation.y}, "z": ${rotation.z} } }`;
+            
+            console.log('Prompt:', promptToEdit);
+            identifyEdition(promptToEdit).then(comandoTraducido => {
+                if (comandoTraducido.includes('borrar')) {
+                    borrar(id);
+                } else {
+                    editarObjeto(id, JSON.parse(comandoTraducido));
+                }
+            });
+        }
     }, { once: true });
 }
 

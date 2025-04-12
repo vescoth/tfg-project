@@ -32,7 +32,8 @@ AFRAME.registerComponent('creador-ui', {
         creadorSaver.setAttribute('rotation', '-1 0 -1');
         creadorSaver.setAttribute('gltf-model', "#button");
         creadorSaver.setAttribute('saver', '');
-
+        creadorSaver.setAttribute('class', 'clickable');
+        
         // Crear señal de saver
         const señalSaver = document.createElement('a-entity');
         señalSaver.setAttribute('id', 'señal-saver');
@@ -131,12 +132,12 @@ AFRAME.registerComponent("creador", {
         this.el.addEventListener("click", (event) => {
             event.stopPropagation();
         });
-        this.el.addEventListener("mousedown", (event) => {
+        this.el.addEventListener("mousedown", async (event) => {
             console.log('Evento onmousedown activado');
             event.stopPropagation();
             const elementId = this.el.getAttribute('id');
             console.log('ID del objeto:', elementId);
-            startEdit(elementId);
+            await startEdit(elementId);
         });
     },
 });

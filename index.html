@@ -10,12 +10,10 @@
     <script type="module" src="./functions.js"></script>
     <script type="module" src="./a_components.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
 </head>
 
 <body>
-    <a-scene physics>
+    <a-scene>
         <a-assets>
             <img id="textura-sky" src="./texturas/enviroment.jpg" />
             <img id="textura-sol" src="./texturas/8k_sun.jpg" />
@@ -35,13 +33,22 @@
             <a-asset-item id="fenix" src="./Modelos/fenix.glb"></a-asset-item>
             <a-asset-item id="cd" src="./Modelos/cd.glb"></a-asset-item>
             <a-asset-item id="basura" src="./Modelos/basura.glb"></a-asset-item>
+            <a-asset-item id="cofre" src="./Modelos/cofre.glb"></a-asset-item>
+            <a-asset-item id="piedra" src="./Modelos/piedra.glb"></a-asset-item>
+            <a-asset-item id="madera" src="./Modelos/madera.glb"></a-asset-item>
+            <a-asset-item id="casa-arbol" src="./Modelos/casa-arbol.glb"></a-asset-item>
+            <a-asset-item id="banco" src="./Modelos/banco.glb"></a-asset-item>
+            <a-asset-item id="lampara" src="./Modelos/lampara.glb"></a-asset-item>
+            <a-asset-item id="ventana" src="./Modelos/ventana.glb"></a-asset-item>
+            <a-asset-item id="antorcha" src="./Modelos/antorcha.glb"></a-asset-item>
+            <a-asset-item id="hierba" src="./Modelos/hierba.glb"></a-asset-item>
         </a-assets>
 
         <a-entity creador-ui>
 
         </a-entity>
         <a-sky src="#textura-sky"></a-sky>
-    
+
         <!-- Luz -->
         <a-light type="directional" intensity="1" position="0 7 10"></a-light>
         <a-light type="ambient" intensity="1"></a-light>
@@ -53,11 +60,11 @@
         </a-entity>
 
         <!-- Cámara -->
-        <a-entity id="camera" camera wasd-controls camera-height-control look-controls="pointerLockEnabled: false;" position="0 1.6 3">
-            <!-- Cursor fijo en el centro -->
+        <a-entity id="camera" camera wasd-controls camera-height-control look-controls="pointerLockEnabled: true;"
+            position="0 1.6 3">
             <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -1"
                 geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"
-                material="color: white; shader: flat">
+                material="color: yellow; shader: flat">
             </a-entity>
         </a-entity>
     </a-scene>
