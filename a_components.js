@@ -196,19 +196,14 @@ AFRAME.registerComponent('draggable', {
         this.el.classList.add('grabbed');
 
         const intersectionPoint = intersects[0].point;
+        console.log('Punto de intersección:', intersects[0]);
         const objectPosition = this.el.object3D.position;
 
         this.offset.copy(objectPosition).sub(intersectionPoint);
 
         const cameraPos = new THREE.Vector3();
         this.camera.object3D.getWorldPosition(cameraPos);
-        this.initialDepth = intersectionPoint.distanceTo(cameraPos);
-
-        if (this.body) {
-            this.body.sleep();
-            this.body.collisionFilterGroup = 0;
-            this.body.collisionFilterMask = 0;
-        }
+        this.initialDepth = intersects[0].distance;
     },
 
     tick: function () {
@@ -217,18 +212,13 @@ AFRAME.registerComponent('draggable', {
         const raycaster = this.cursor.components.raycaster.raycaster;
         if (!raycaster) return;
 
-        const targetPoint = raycaster.ray.origin.clone().add(
+        const intersectionPoint = raycaster.ray.origin.clone().add(
             raycaster.ray.direction.clone().multiplyScalar(this.initialDepth)
-        ).add(this.offset);
+        );
+        const targetPoint = intersectionPoint.add(this.offset);
 
         this.el.object3D.position.copy(targetPoint);
         this.el.object3D.updateMatrixWorld(true);
-
-        if (this.body) {
-            this.body.position.copy(targetPoint);
-            this.body.velocity.set(0, 0, 0);
-            this.body.angularVelocity.set(0, 0, 0);
-        }
     },
 
     stopDrag: function () {
