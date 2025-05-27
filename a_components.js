@@ -83,6 +83,7 @@ AFRAME.registerComponent("creador-lanzador", {
         console.log('Posición del lanzador:', position);
         this.el.addEventListener("click", (event) => {
             event.stopPropagation(); // Evitar que el evento se propague a otros elementos
+            state.creation_id += 1;
             console.log('Evento click en lanzador activado');
             const creador = document.createElement("a-entity");
             creador.setAttribute('id', `${state.creation_id}`);
@@ -95,7 +96,6 @@ AFRAME.registerComponent("creador-lanzador", {
             creador.setAttribute('draggable', '');
             creador.setAttribute('class', 'clickable');
             el.appendChild(creador);
-            state.creation_id += 1;
         });
     },
 });

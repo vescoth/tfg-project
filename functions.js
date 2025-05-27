@@ -56,6 +56,23 @@ export function borrar(id) {
     console.log("Elemento eliminado de la escena.");
 }
 
+function multiplicarObjeto(objetoId, objectJson){
+    const objeto = document.getElementById(objetoId);
+    let position = objectJson.position;
+    let rotation = objectJson.rotation;
+    let multiplicador = objectJson.multiplicador;
+    console.log("id actual:", state.creation_id);
+    for (let i = 0; i < multiplicador; ++i) {
+        let nuevoObjeto = objeto.cloneNode(true);
+        state.creation_id += 1;
+        console.log("Nuevo ID:", state.creation_id);
+        nuevoObjeto.setAttribute('id', state.creation_id);
+        nuevoObjeto.setAttribute('position', `${position.x + i} ${position.y} ${position.z}`);
+        nuevoObjeto.setAttribute('rotation', rotation);
+        objeto.parentNode.appendChild(nuevoObjeto);
+    }
+}
+
 export async function editarObjeto(objetoId, newObjectJson) {
     const objeto = document.getElementById(objetoId);
     let modelo = newObjectJson.model.trim();
@@ -81,6 +98,13 @@ export async function editarObjeto(objetoId, newObjectJson) {
     objeto.setAttribute('position', position);
     objeto.setAttribute('rotation', rotation);
 
+    objeto.flushToDOM(true);
+
+    if (newObjectJson.multiplicador > 0) {
+        console.log("Antes de multiplicar id es:", state.creation_id);
+        multiplicarObjeto(objetoId, newObjectJson, newObjectJson.multiplicador);
+    }
+
     console.log("Nuevo objeto:", objeto);
 
     console.log("Objeto editado en la escena.");
@@ -90,7 +114,7 @@ export function borrarTodo() {
     const lanzador = document.getElementById('lanzador');
     lanzador.innerHTML = '';
     state.creation_id = 0;
-    console.log("Elementos eliminados de la escena.");
+    console.log("Elementos eliminados de la escena. ID actual:", state.creation_id);
 }
 
 export async function identifyEdition(prompt) {
@@ -107,7 +131,7 @@ export async function identifyEdition(prompt) {
                     {
                         "role": "system",
                         "content": "Eres un asistente que se encarga de generar un JSON válido o responder con 'borrar'. El JSON tendrá los elementos\
-                                    'model', 'scale', 'position' y 'rotation'.\
+                                    'model', 'scale', 'position', 'rotation' y 'multiplicador'.\
                                     Tu misión es elegir los valores de estos elementos que más se adecúen a la solicitud del usuario.\
                                     NO APLIQUES NINGÚN FORMATO ADICIONAL A TU RESPUESTA, SOLO DEVUELVE EL JSON EN TEXTO PLANO O 'borrar'.\
                                     Responde lo más rápido posible"
@@ -125,31 +149,34 @@ export async function identifyEdition(prompt) {
                                     4. Modifica los valores de "rotation" basándote en si el usuario quiere rotar el objeto (pueden combinarse).\
                                     - "rotation": Un objeto con los valores "x", "y" y "z", representando la rotación del objeto en A-Frame. (ejemplo: rotation: { "x": 0, "y": 0, "z": 0 })\
                                     "Girar" o "rotar" se refiere a la rotación del objeto en el espacio 3D. Por ejemplo, si el usuario dice "gira a la derecha", puedes ajustar la rotación en el eje Y.\
-                                    5. El estado del objeto vendrá en la entrada en formato JSON después de la instrucción y este se\
+                                    5. Asigna un valor numérico a "multiplicador" si el usuario menciona "multiplicar" o similares para generar el número especificado de objetos iguales. Si no se menciona\
+                                    ningún número asigna uno en función de la frase/preposición del usuario. Si no se menciona nada sobre multiplicar los objetos o generar más del mismo tipo,\
+                                    este valor será siempre cero (0)\
+                                    6. El estado del objeto vendrá en la entrada en formato JSON después de la instrucción y este se\
                                     deberá modificar para cumplir con las nuevas instrucciones.\
                                     \
-                                    6. Los valores modificados de "scale" serán acordes a la intensidad de la instrucción.\
-                                    7. La respuesta debe ser un JSON válido sin texto adicional salvo cuando se quiera borrar, en cuyo caso responde simplemente "borrar".\
-                                    8. La respuesta con el JSON generado DEBE seguir ESTRICTAMENTE el siguiente formato: { "model": "modelo", "scale": { "x": 2, "y": 2, "z": 2 }}\
-                                    9. El modelo solo podrá tener letras minúsculas y no tendrá ninguna tilde.\
-                                    10. Si no se menciona ningún modelo, se deberá responder con el modelo que ya tiene el objeto.\
+                                    7. Los valores modificados de "scale" serán acordes a la intensidad de la instrucción.\
+                                    8. La respuesta debe ser un JSON válido sin texto adicional salvo cuando se quiera borrar, en cuyo caso responde simplemente "borrar".\
+                                    9. La respuesta con el JSON generado DEBE seguir ESTRICTAMENTE el siguiente formato: { "model": "modelo", "scale": { "x": 2, "y": 2, "z": 2 }}\
+                                    10. El modelo solo podrá tener letras minúsculas y no tendrá ninguna tilde.\
+                                    11. Si no se menciona ningún modelo, se deberá responder con el modelo que ya tiene el objeto.\
                                     Recuerda que si el usuario solicita borrar la figura, NO se responderá con un JSON, SOLO contesta "borrar".\
                                     Ejemplos de entrada y salida:\
                                     1.\
                                     Entrada: "Quiero tener/generar/crear un xxx { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"\
-                                    Salida: { "model": "xxx", "scale": { "x": 1, "y": 1, "z": 1 }}\
+                                    Salida: { "model": "xxx", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0 }\
                                     2.\
                                     Entrada: "Quiero borrar esto"\
                                     Salida: borrar\
                                     3.\
-                                    Entrada: "Quiero que sea tremendamente grande { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }}, "rotation: { "x": 0, "y": 0, "z": 0 })" \
-                                    Salida: { "model": "rex", "scale": { "x": 10, "y": 10, "z": 10 }, "position": { "x": 1, "y": 1, "z": 1 }}\
+                                    Entrada: "Quiero que sea tremendamente grande { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }}, "rotation": { "x": 0, "y": 0, "z": 0 }} \
+                                    Salida: { "model": "rex", "scale": { "x": 10, "y": 10, "z": 10 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
                                     4.\
                                     Entrada: "Quiero que sea más bajo{ "model: "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"\
-                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 12, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 12, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"}\
                                     5.\
-                                    Entrada: "Ponlo en el suelo { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }}"\
-                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 0, "z": 1 }}\
+                                    Entrada: "Ponlo en el suelo y genera 10 más { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }}"\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 0, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }, "multiplicador": 10}\
                                     La lista de modelos disponibles que deberás identificar según el prompt del usuario es la siguiente:\
                                     - "rex", "flor", "dron", "fenix", "dragon", "coche", "boton", "basura", "casa-arbol", "antorcha", "piedra", "madera", "hierba", "casa"\
                                     "ventana", "casa-arbol", "cofre", "abeja", "lampara"'
@@ -240,14 +267,14 @@ export async function startEdit(id) {
 
     const recorder = await recordAudio();
     recorder.start();
-    console.log("Grabando...");
+    console.log("Grabando... el id es", state.creation_id);
     document.addEventListener('mouseup', async (event) => {
         event.stopPropagation();
         const audio = await recorder.stop();
         console.log("Grabación detenida.");
         const transcript = await recognizeSpeech(audio.audioBlob);
         console.log('Comando detectado:', transcript);
-        if (transcript.toLowerCase().includes('por favor')) {
+        if (transcript.toLowerCase().includes('gemma') || transcript.toLowerCase().includes('gema')) {
             const promptToEdit = transcript.toLowerCase() + 
                 ` { "model": "${modelName}", \
                 "scale": { "x": ${scale.x}, "y": ${scale.y}, "z": ${scale.z} }, \
