@@ -1,4 +1,6 @@
-import { startEdit, actualizarAtributos, borrarTodo, state } from "./functions.js";
+import { state } from "./global.js";
+import { startEdit, borrarTodo } from "./edition.js";
+import { actualizarAtributos } from "./sceneLoader.js";
 
 AFRAME.registerComponent('creador-ui', {
     init: function () {
@@ -12,7 +14,7 @@ AFRAME.registerComponent('creador-ui', {
         creadorLanzador.setAttribute('position', '0 0 0');
         creadorLanzador.setAttribute('scale', '1 1 1');
         creadorLanzador.setAttribute('rotation', '-1 0 -1');
-        creadorLanzador.setAttribute('gltf-model', "#button");
+        creadorLanzador.setAttribute('gltf-model', "#boton");
         creadorLanzador.setAttribute('creador-lanzador', '');
         creadorLanzador.setAttribute('class', 'clickable');
 
@@ -30,10 +32,10 @@ AFRAME.registerComponent('creador-ui', {
         creadorSaver.setAttribute('position', '-1 0 0');
         creadorSaver.setAttribute('scale', '1 1 1');
         creadorSaver.setAttribute('rotation', '-1 0 -1');
-        creadorSaver.setAttribute('gltf-model', "#button");
+        creadorSaver.setAttribute('gltf-model', "#boton");
         creadorSaver.setAttribute('saver', '');
         creadorSaver.setAttribute('class', 'clickable');
-        
+
         // Crear señal de saver
         const señalSaver = document.createElement('a-entity');
         señalSaver.setAttribute('id', 'señal-saver');
@@ -48,7 +50,7 @@ AFRAME.registerComponent('creador-ui', {
         creadorEraser.setAttribute('position', '1 0 0');
         creadorEraser.setAttribute('scale', '1 1 1');
         creadorEraser.setAttribute('rotation', '-1 0 -1');
-        creadorEraser.setAttribute('gltf-model', "#button");
+        creadorEraser.setAttribute('gltf-model', "#boton");
         creadorEraser.setAttribute('eraser', '');
         creadorEraser.setAttribute('class', 'clickable');
 
@@ -73,18 +75,24 @@ AFRAME.registerComponent('creador-ui', {
     }
 });
 
+AFRAME.registerComponent('close-on-click', {
+    init: function () {
+        const welcomePanel = document.getElementById('welcomePanel');
+        this.el.addEventListener('click', function () {
+            welcomePanel.parentNode.removeChild(welcomePanel);
+        });
+    }
+});
+
 AFRAME.registerComponent("creador-lanzador", {
     init: function () {
         console.log('Creando lanzador');
         const el = this.el;
         const modelo = "#fluido";
         const scale = '1 1 1';
-        const position = this.el.getAttribute('position');
-        console.log('Posición del lanzador:', position);
         this.el.addEventListener("click", (event) => {
             event.stopPropagation(); // Evitar que el evento se propague a otros elementos
             state.creation_id += 1;
-            console.log('Evento click en lanzador activado');
             const creador = document.createElement("a-entity");
             creador.setAttribute('id', `${state.creation_id}`);
             creador.setAttribute('gltf-model', modelo);
@@ -95,6 +103,8 @@ AFRAME.registerComponent("creador-lanzador", {
             creador.setAttribute('creador', '');
             creador.setAttribute('draggable', '');
             creador.setAttribute('class', 'clickable');
+            creador.setAttribute('sound__down', 'src: url(./sonidos/pop.mp3); on: mousedown; volume: 0.5');
+            creador.setAttribute('sound__up', 'src: url(./sonidos/done.mp3); on: mouseup; volume: 0.5');
             el.appendChild(creador);
         });
     },
@@ -127,8 +137,6 @@ AFRAME.registerComponent("eraser", {
 
 AFRAME.registerComponent("creador", {
     init: function () {
-        console.log('Creando objeto');
-        console.log('Elemento objeto:', this.el);
         this.el.addEventListener("click", (event) => {
             event.stopPropagation();
         });
@@ -196,7 +204,6 @@ AFRAME.registerComponent('draggable', {
         this.el.classList.add('grabbed');
 
         const intersectionPoint = intersects[0].point;
-        console.log('Punto de intersección:', intersects[0]);
         const objectPosition = this.el.object3D.position;
 
         this.offset.copy(objectPosition).sub(intersectionPoint);
@@ -226,11 +233,8 @@ AFRAME.registerComponent('draggable', {
 
         this.grabbed = false;
         this.el.classList.remove('grabbed');
-
-        if (this.body) {
-            this.body.wakeUp();
-            this.body.collisionFilterGroup = 1;
-            this.body.collisionFilterMask = 1;
-        }
+        const newPosition = this.el.object3D.position;
+        this.el.setAttribute('position', `${newPosition.x} ${newPosition.y} ${newPosition.z}`);
+        actualizarAtributos();
     }
 });

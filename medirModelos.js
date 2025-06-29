@@ -1,27 +1,23 @@
-// const API_KEY = "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"; // Reemplaza con tu clave de Groq
+const API_KEY = "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"; // clave de Groq
 
 const models = [
-    // 'llama-3.1-8b-instant',
-    // 'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'llama-3.3-70b-versatile',
     // 'llama-3.2-3b-preview',
     // 'qwen-2.5-32b',
     // 'mixtral-8x7b-32768',
-    // 'deepseek-r1-distill-llama-70b'
-    'llama-guard-3-8b',
-    'llama3-8b-8192',
+    // 'deepseek-r1-distill-llama-70b',
+    'meta-llama/llama-guard-4-12b',
     'gemma2-9b-it',
-    'llama-3.2-1b-preview',
+
 
 ];
 
 function medirPrecisionRespuesta(respuestaEsperada, respuestaObtenida) {
     let exactitud;
-    if (respuestaEsperada === respuestaObtenida) {
-        console.log("La respuesta es exacta. + 1");
+    if (respuestaEsperada === respuestaObtenida.trim()) {
+        console.log("La respuesta es correcta. + 1");
         exactitud = 1;
-    }else if (respuestaObtenida.includes(respuestaEsperada)) {
-        console.log("La respuesta no es exacta pero contiene el valor esperado. (+ 0.5)");
-        exactitud = 0.5;
     }else{
         console.log("La respuesta es incorrecta. (+ 0)");
         exactitud = 0;

@@ -7,29 +7,23 @@
     <title>TFG Veselin A-Frame</title>
     <!-- <script src="./medirModelos.js"></script> -->
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script type="module" src="./functions.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script type="module" src="./a_components.js"></script>
+    <script type="module" src="./medirModelos.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
 </head>
 
 <body>
-    <a-scene>
+    <a-scene id="scene">
         <a-assets>
             <img id="textura-sky" src="./texturas/enviroment.jpg" />
-            <img id="textura-sol" src="./texturas/8k_sun.jpg" />
-            <img id="textura-piramide" src="./texturas/piramide.jpg" />
-            <img id="textura-vidrio" src="./texturas/vidrio.jpg" />
-            <img id="textura-hielo" src="./texturas/hielo.jpg" />
             <!-- Modelos glb pasar por model-viewer https://modelviewer.dev/editor/ -->
-            <a-asset-item id="rex" src="./Modelos/rex.glb"></a-asset-item>
+            <a-asset-item id="dinosaurio" src="./Modelos/dinosaurio.glb"></a-asset-item>
             <a-asset-item id="drone" src="./Modelos/dron.glb"></a-asset-item>
             <a-asset-item id="bee" src="./Modelos/abeja.glb"></a-asset-item>
-            <a-asset-item id="button" src="./Modelos/boton.glb"></a-asset-item>
-            <a-asset-item id="flor" src="./Modelos/flor.glb"></a-asset-item>
-            <a-asset-item id="particles" src="./Modelos/particulas.glb"></a-asset-item>
+            <a-asset-item id="boton" src="./Modelos/boton.glb"></a-asset-item>
             <a-asset-item id="fluido" src="./Modelos/fluido.glb"></a-asset-item>
             <a-asset-item id="coche" src="./Modelos/coche.glb"></a-asset-item>
-            <a-asset-item id="dragon" src="./Modelos/dragon.glb"></a-asset-item>
             <a-asset-item id="fenix" src="./Modelos/fenix.glb"></a-asset-item>
             <a-asset-item id="cd" src="./Modelos/cd.glb"></a-asset-item>
             <a-asset-item id="basura" src="./Modelos/basura.glb"></a-asset-item>
@@ -44,9 +38,48 @@
             <a-asset-item id="hierba" src="./Modelos/hierba.glb"></a-asset-item>
         </a-assets>
 
-        <a-entity creador-ui>
+        <a-entity id="welcomePanel" position="0 2 -3" visible="true" draggable="">
+            <!-- Fondo del panel -->
+            <a-plane width="2.8" height="4.3" color="#222" opacity="0.9" class="clickable"
+                onclick="event.stopPropagation();" position="0 0.6 0"></a-plane>
 
+            <!-- Texto de bienvenida -->
+            <a-text
+                value='Bienvenido a Habla y Crea.\n
+                        En esta herramienta podras crear y editar modelos 3D usando tu voz, con ayuda de Gemma, la asistente virtual.\n
+                        ¿Como empezar?\n
+                        - Pulsa el boton central para generar un ferrofluido.\n
+                        - Coloca el cursor amarillo sobre el.\n
+                        - Manten pulsado el boton (clic o pinch) y habla.\n
+                        - Di cosas como: "Quiero un dinosaurio, Gemma."\n
+                        - Suelta y espera confirmacion.\n
+                        \n
+                        Ejemplos de comandos:\n
+                        - "Gemma, hazlo mas grande."\n
+                        - "Gemma, giralo 180 grados."\n
+                        - "Gemma, quiero tres copias más."\n
+                        \n
+                        El boton derecho borra toda la escena.
+                        \n
+                        El boton izquierdo descarga la escena actual para cargarla mas tarde metiendo el archivo descargado en el directorio principal del proyecto.\n
+                        \n
+                        🔊 Recuerda: Si no mencionas a Gemma, el comando no se ejecutara.\n
+                        \n
+                        Modelos disponibles: Dinosaurio, dron, abeja, boton, coche, fenix, cofre, casa arbol, piedra, banco, lampara, ventana, antorcha y hierba.
+                        \n
+                        Creador: Veselin Todorov Hristov
+                        \n
+                        TFG Univerdidad Rey Juan Carlos 2024-2025'
+                width="2.5" color="#00FFFF" position="-1.35 0.6 0" line-height="30"></a-text>
+
+            <!-- Botón de cerrar -->
+            <a-plane id="closePanelBtn" position="1.25 2.6 0.01" width="0.25" height="0.25" color="#ff3333"
+                class="clickable" draggable="">
+                <a-text value="X" color="#fff" position="-0.03 0 0" width="2"></a-text>
+            </a-plane>
         </a-entity>
+
+        <a-entity creador-ui></a-entity>
         <a-sky src="#textura-sky"></a-sky>
 
         <!-- Luz -->
