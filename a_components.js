@@ -78,7 +78,7 @@ AFRAME.registerComponent('creador-ui', {
 AFRAME.registerComponent('close-on-click', {
     init: function () {
         const welcomePanel = document.getElementById('welcomePanel');
-        this.el.addEventListener('click', function () {
+        this.el.addEventListener('mousedown', function () {
             welcomePanel.parentNode.removeChild(welcomePanel);
         });
     }
