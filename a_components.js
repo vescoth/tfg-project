@@ -90,7 +90,7 @@ AFRAME.registerComponent("creador-lanzador", {
         const el = this.el;
         const modelo = "#fluido";
         const scale = '1 1 1';
-        this.el.addEventListener("click", (event) => {
+        this.el.addEventListener("mousedown", (event) => {
             event.stopPropagation(); // Evitar que el evento se propague a otros elementos
             state.creation_id += 1;
             const creador = document.createElement("a-entity");
@@ -113,7 +113,7 @@ AFRAME.registerComponent("creador-lanzador", {
 AFRAME.registerComponent("saver", {
     init: function () {
         console.log('Creando saver');
-        this.el.addEventListener("click", () => {
+        this.el.addEventListener("mousedown", () => {
             actualizarAtributos();
             const scene = document.getElementById('lanzador').innerHTML;
             const sceneBlob = new Blob([scene], { type: 'text/plain' });
@@ -129,7 +129,7 @@ AFRAME.registerComponent("saver", {
 AFRAME.registerComponent("eraser", {
     init: function () {
         console.log('Creando eraser');
-        this.el.addEventListener("click", () => {
+        this.el.addEventListener("mousedown", () => {
             borrarTodo();
         });
     },

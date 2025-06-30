@@ -1,8 +1,0 @@
-Model Information:
-* title:	Spinosaurus
-* source:	https://sketchfab.com/3d-models/spinosaurus-5182c153d4c84594aaf21fe4bee96f12
-* author:	ichigo15 (https://sketchfab.com/ichigo15)
-
-Model License:
-* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
-* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
