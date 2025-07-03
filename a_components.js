@@ -17,6 +17,7 @@ AFRAME.registerComponent('creador-ui', {
         creadorLanzador.setAttribute('gltf-model', "#boton");
         creadorLanzador.setAttribute('creador-lanzador', '');
         creadorLanzador.setAttribute('class', 'clickable');
+        creadorLanzador.setAttribute('sound__down', 'src: url(./sonidos/boton.mp3); on: mousedown; volume: 0.5');
 
 
         // Crear señal de lanzador
@@ -35,6 +36,7 @@ AFRAME.registerComponent('creador-ui', {
         creadorSaver.setAttribute('gltf-model', "#boton");
         creadorSaver.setAttribute('saver', '');
         creadorSaver.setAttribute('class', 'clickable');
+        creadorSaver.setAttribute('sound__down', 'src: url(./sonidos/boton.mp3); on: mousedown; volume: 0.5');
 
         // Crear señal de saver
         const señalSaver = document.createElement('a-entity');
@@ -53,6 +55,7 @@ AFRAME.registerComponent('creador-ui', {
         creadorEraser.setAttribute('gltf-model', "#boton");
         creadorEraser.setAttribute('eraser', '');
         creadorEraser.setAttribute('class', 'clickable');
+        creadorEraser.setAttribute('sound__down', 'src: url(./sonidos/boton.mp3); on: mousedown; volume: 0.5');
 
         // Crear señal de borrar
         const señalBorrar = document.createElement('a-entity');

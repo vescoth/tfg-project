@@ -151,20 +151,35 @@ export async function identifyEdition(prompt) {
                                     Recuerda que si el usuario solicita borrar la figura, NO se responderá con un JSON, SOLO contesta "borrar".\
                                     Ejemplos de entrada y salida:\
                                     1.\
-                                    Entrada: "Quiero tener/generar/crear un xxx { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"\
-                                    Salida: { "model": "xxx", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0 }\
+                                    Entrada: "Quiero tener/generar/crear un xxx { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 })"\
+                                    Salida: { "model": "xxx", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0 }\
                                     2.\
-                                    Entrada: "Quiero borrar esto"\
+                                    Entrada: "Quiero borrar/eliminar esto"\
                                     Salida: borrar\
                                     3.\
                                     Entrada: "Quiero que sea tremendamente grande { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }}, "rotation": { "x": 0, "y": 0, "z": 0 }} \
                                     Salida: { "model": "rex", "scale": { "x": 10, "y": 10, "z": 10 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
                                     4.\
-                                    Entrada: "Quiero que sea más alto{ "model: "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 })"\
-                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 2, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
+                                    Entrada: "Quiero que sea más alto{ "model: "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 })"\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 2, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
                                     5.\
-                                    Entrada: "Ponlo en el suelo y genera 10 más { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }}"\
-                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 0, "z": 1 }, "rotation: { "x": 0, "y": 0, "z": 0 }, "multiplicador": 10}\
+                                    Entrada: "Quiero que sea más corto" { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}"\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 0.5 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
+                                    6.\
+                                    Entrada: "Quiero que girarlo 45 grados" { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 45, "z": 0 }, "multiplicador": 0}\
+                                    7.\
+                                    Entrada: "Quiero que sea más estrecho/fino { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 0.5, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
+                                    8.\
+                                    Entrada: "Quiero que sea más ancho { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 2, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
+                                    9.\
+                                    Entrada: "Quiero que sea más largo/profundo { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 2 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
+                                    10.\
+                                    Entrada: "Quiero otro/X copias /X replicas más { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": X}\
                                     La lista de modelos disponibles que deberás identificar según el prompt del usuario es la siguiente:\
                                     - "rex", "flor", "dron", "fenix", "dragon", "coche", "boton", "basura", "casa-arbol", "antorcha", "piedra", "madera", "hierba", "casa"\
                                     "ventana", "casa-arbol", "cofre", "abeja", "lampara"'
