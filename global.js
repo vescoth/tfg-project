@@ -1,4 +1,4 @@
-export const API_KEY = "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";
+export const API_KEY = "gsk_mXva9bcJZJhXNrPL2LY2WGdyb3FYwIYlTG2N6ALHjHHj2abbzPg";
 
 export const state = {
     creation_id: 0
