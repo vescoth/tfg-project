@@ -16,7 +16,7 @@
 <body>
     <a-scene id="scene">
         <a-assets>
-            <img id="textura-sky" src="./texturas/enviroment.jpg" />
+            <img id="textura-sky" src="./texturas/sk.jpg" />
             <!-- Modelos glb pasar por model-viewer https://modelviewer.dev/editor/ -->
             <a-asset-item id="dinosaurio" src="./Modelos/dinosaurio.glb"></a-asset-item>
             <a-asset-item id="drone" src="./Modelos/dron.glb"></a-asset-item>
@@ -44,8 +44,7 @@
                 onclick="event.stopPropagation();" position="0 0.6 0"></a-plane>
 
             <!-- Texto de bienvenida -->
-            <a-text
-                value='Bienvenido a Habla y Crea.\n
+            <a-text value='Bienvenido a Habla y Crea.\n
                         En esta herramienta podras crear y editar modelos 3D usando tu voz, con ayuda de Gemma, la asistente virtual.\n
                         ¿Como empezar?\n
                         - Pulsa el boton central para generar un ferrofluido.\n
@@ -69,8 +68,8 @@
                         \n
                         Creador: Veselin Todorov Hristov
                         \n
-                        TFG Univerdidad Rey Juan Carlos 2024-2025'
-                width="2.5" color="#00FFFF" position="-1.35 0.6 0" line-height="30"></a-text>
+                        TFG Univerdidad Rey Juan Carlos 2024-2025' width="2.5" color="#00FFFF" position="-1.35 0.6 0"
+                line-height="30"></a-text>
 
             <!-- Botón de cerrar -->
             <a-plane id="closePanelBtn" position="1.25 2.6 0.01" width="0.25" height="0.25" color="#ff3333"
@@ -82,25 +81,31 @@
         <a-entity creador-ui></a-entity>
         <a-sky src="#textura-sky"></a-sky>
 
+
         <!-- Luz -->
-        <a-light type="directional" intensity="1" position="0 7 10"></a-light>
+        <a-light type="directional" intensity="1" position="-3 7 10"></a-light>
         <a-light type="ambient" intensity="1"></a-light>
 
         <!-- Suelo -->
-        <a-entity geometry="primitive: circle; radius: 100;"
-            material="color: white ; opacity: 0.7; metalness: 0.5; emissive:rgb(255, 255, 255)" position="0 0 0"
-            rotation="-90 0 0" static-body>
+        <a-entity geometry="primitive: circle; radius: 100;" material="src: url(./texturas/floor.jpg); repeat: 100 100"
+            position="0 0 0" rotation="-90 0 0" static-body>
         </a-entity>
 
         <!-- Cámara -->
         <a-entity id="camera" camera wasd-controls camera-height-control look-controls="pointerLockEnabled: true;"
             position="0 1.6 3">
-            <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -1"
-                geometry="primitive: ring; radiusInner: 0.01; radiusOuter: 0.015"
+            <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -0.25"
+                geometry="primitive: ring; radiusInner: 0.001; radiusOuter: 0.0015"
                 material="color: yellow; shader: flat">
             </a-entity>
         </a-entity>
     </a-scene>
+    <script>
+        AFRAME.scenes[0].addEventListener('loaded', function () {
+            const camera = document.querySelector('#camera');
+            camera.setAttribute('rotation', '0 180 0');
+        });
+    </script>
 </body>
 
 </html>
