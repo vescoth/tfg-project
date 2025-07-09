@@ -125,6 +125,7 @@ AFRAME.registerComponent("saver", {
             sceneLink.href = sceneURL;
             sceneLink.download = 'mi-escena.html';
             sceneLink.click();
+            URL.revokeObjectURL(sceneURL);
         });
     },
 });

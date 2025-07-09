@@ -151,8 +151,8 @@ export async function identifyEdition(prompt) {
                                     Recuerda que si el usuario solicita borrar la figura, NO se responderá con un JSON, SOLO contesta "borrar".\
                                     Ejemplos de entrada y salida:\
                                     1.\
-                                    Entrada: "Quiero tener/generar/crear un xxx { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 })"\
-                                    Salida: { "model": "xxx", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0 }\
+                                    Entrada: "Quiero tener/generar/crear un modelo { "model": "esfera", "scale": { "x": 4, "y": 4, "z": 4 }}, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 })"\
+                                    Salida: { "model": "modelo", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0 }\
                                     2.\
                                     Entrada: "Quiero borrar/eliminar esto"\
                                     Salida: borrar\
@@ -181,7 +181,7 @@ export async function identifyEdition(prompt) {
                                     Entrada: "Quiero otro/X copias /X replicas más { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
                                     Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": X}\
                                     La lista de modelos disponibles que deberás identificar según el prompt del usuario es la siguiente:\
-                                    - "rex", "flor", "dron", "fenix", "dragon", "coche", "boton", "basura", "casa-arbol", "antorcha", "piedra", "madera", "hierba", "casa"\
+                                    - "dinosaurio", "flor", "dron", "fenix", "dragon", "coche", "boton", "basura", "casa-arbol", "antorcha", "piedra", "madera", "hierba", "casa"\
                                     "ventana", "casa-arbol", "cofre", "abeja", "lampara"'
                                     
                     },
