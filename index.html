@@ -16,7 +16,7 @@
 <body>
     <a-scene id="scene">
         <a-assets>
-            <img id="textura-sky" src="./texturas/sk.jpg" />
+            <img id="textura-sky" src="./texturas/sky.jpg" />
             <!-- Modelos glb pasar por model-viewer https://modelviewer.dev/editor/ -->
             <a-asset-item id="dinosaurio" src="./Modelos/dinosaurio.glb"></a-asset-item>
             <a-asset-item id="drone" src="./Modelos/dron.glb"></a-asset-item>
@@ -93,12 +93,12 @@
 
         <!-- Cámara -->
         <a-entity id="camera" camera wasd-controls camera-height-control look-controls="pointerLockEnabled: true;"
-            position="0 1.6 3">
-            <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -0.25"
-                geometry="primitive: ring; radiusInner: 0.001; radiusOuter: 0.0015"
+            position="0 2 3">
+            <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -0.5"
+                geometry="primitive: ring; radiusInner: 0.003; radiusOuter: 0.0050"
                 material="color: yellow; shader: flat">
             </a-entity>
-        </a-entity>
+        </a-entity>a
     </a-scene>
     <script>
         AFRAME.scenes[0].addEventListener('loaded', function () {
