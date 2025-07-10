@@ -94,11 +94,11 @@
         <!-- Cámara -->
         <a-entity id="camera" camera wasd-controls camera-height-control look-controls="pointerLockEnabled: true;"
             position="0 2 3">
-            <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -0.5"
+            <a-entity id="gaze-cursor" cursor="rayOrigin: entity" raycaster="objects: .clickable" position="0 0 -1"
                 geometry="primitive: ring; radiusInner: 0.003; radiusOuter: 0.0050"
                 material="color: yellow; shader: flat">
             </a-entity>
-        </a-entity>a
+        </a-entity>
     </a-scene>
     <script>
         AFRAME.scenes[0].addEventListener('loaded', function () {
