@@ -114,7 +114,7 @@ export async function identifyEdition(prompt) {
                 "Authorization": `Bearer ${API_KEY}`,
             },
             body: JSON.stringify({
-                model: "gemma2-9b-it", // Modelo disponible en Groq
+                model: "gemma2-9b-it", // Modelo disponible en Groq (llama-3.3-70b-versatile va mejor pero tiene un coste mayor)
                 messages: [
                     {
                         "role": "system",
@@ -131,6 +131,7 @@ export async function identifyEdition(prompt) {
                                     - "model": Nombre del modelo que se desea visualizar (ejemplo: "model": cubo)\
                                     2. Modifica el valor de "scale" basándote en las instrucciones dadas por el usuario. \
                                     Si se menciona "más grande", "más alto", etc., ajusta los valores de x, y, z según la intensidad de la instrucción.\
+                                    (Alto/bajo modifica el valor del eje y, ancho/estrecho modifica el valor del eje x, largo/corto modifica el valor del eje z, grande/pequeño modifica los tres) \
                                     - "scale": Un objeto con los valores "x", "y" y "z", representando la escala del objeto en A-Frame.(ejemplo: "scale": { "x": 2, "y": 2, "z": 2 })\
                                     3. Modifica los valores de "position" basándote en si el usuario quiere colocar el objeto arriba, abajo, izquierda o derecha (pueden combinarse).\
                                     - "position": Un objeto con los valores "x", "y" y "z", representando la posición del objeto en A-Frame. (ejemplo: position: { "x": 0, "y": 2, "z": 0 })\
