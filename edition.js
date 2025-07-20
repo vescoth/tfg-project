@@ -114,7 +114,7 @@ export async function identifyEdition(prompt) {
                 "Authorization": `Bearer ${API_KEY}`,
             },
             body: JSON.stringify({
-                model: "gemma2-9b-it", // Modelo disponible en Groq (llama-3.3-70b-versatile va mejor pero tiene un coste mayor)
+                model: "llama-3.3-70b-versatile", // Modelo disponible en Groq (llama-3.3-70b-versatile va mejor pero tiene un coste mayor)
                 messages: [
                     {
                         "role": "system",
@@ -179,8 +179,8 @@ export async function identifyEdition(prompt) {
                                     Entrada: "Quiero que sea más largo/profundo { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
                                     Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 2 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 0}\
                                     10.\
-                                    Entrada: "Quiero otro/X copias /X replicas más { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
-                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": X}\
+                                    Entrada: "Quiero 2 réplicas más / Quiero triplicarlo  { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }}\
+                                    Salida: { "model": "rex", "scale": { "x": 1, "y": 1, "z": 1 }, "position": { "x": 1, "y": 1, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "multiplicador": 2}\
                                     La lista de modelos disponibles que deberás identificar según el prompt del usuario es la siguiente:\
                                     - "dinosaurio", "flor", "dron", "fenix", "dragon", "coche", "boton", "basura", "casa-arbol", "antorcha", "piedra", "madera", "hierba", "casa"\
                                     "ventana", "casa-arbol", "cofre", "abeja", "lampara"'
